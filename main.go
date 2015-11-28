@@ -14,10 +14,20 @@ import (
 	"github.com/Ganners/doomsday"
 )
 
+// The range of years for the random generation
 const (
 	minYear = 1900
 	maxYear = 2100
+)
 
+const (
+
+	// Some basic strings
+	AnswerSelected  = "You've gone for %s\n"
+	AskQuestion     = "\033[0;32m" + "Calculate the day for: -- %d %s, %d --: " + "\033[1;32m"
+	ValidationError = "Please only input a number between 1 - 7\n"
+
+	// To display when the game starts up
 	title = `
 ================================================================
     ______  _____  _____ ___  ___ _____ ______   ___ __   __
@@ -45,10 +55,7 @@ Answer keyboard mapping:
 Press CTRL+C to close :-)
 `
 
-	AnswerSelected  = "You've gone for %s\n"
-	AskQuestion     = "\033[0;32m" + "Calculate the day for: -- %d %s, %d --: " + "\033[1;32m"
-	ValidationError = "Please only input a number between 1 - 7\n"
-	//IncorrectAnswer = "Sorry, that's incorrect. The answer is: %s\n"
+	// The incorrect message
 	IncorrectAnswer = "\033[0;31m" + `
 ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠ ☠
 
@@ -58,6 +65,7 @@ Press CTRL+C to close :-)
 
 ` + "\033[1;32m"
 
+	// The congratulations message
 	Congratulations = "\033[0;33m" + `
                   *
       ★                        ★           *           ★
@@ -72,6 +80,7 @@ Press CTRL+C to close :-)
 
 func main() {
 
+	// Seeding is important.. else it would be the same every time we play
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	// Print the title
@@ -79,10 +88,12 @@ func main() {
 
 	// Start the game
 	for {
+		// Games will loop so we can play lots! FUN!
 		startGame()
 	}
 }
 
+// Starts a game (or round of a game)
 func startGame() {
 
 	randYear := genRandYear()
@@ -106,6 +117,9 @@ func startGame() {
 	}
 }
 
+// Generates a question message to prompt the user for an answer and then reads
+// in and parses/validates that answer. Returns the number that has been
+// entered
 func readNumber(year, month, day int) int {
 
 	fmt.Printf(AskQuestion, day, doomsday.Month(month), year)
@@ -129,6 +143,7 @@ func readNumber(year, month, day int) int {
 	return int(firstCharacter - 48)
 }
 
+// Generates a random year between two constants set, maxYear and minYear
 func genRandYear() int {
 
 	yearRange := maxYear - minYear
@@ -136,12 +151,14 @@ func genRandYear() int {
 	return year
 }
 
+// Generates a random month
 func genRandMonth() int {
 
 	monthRange := 12
 	return rand.Intn(monthRange) + 1
 }
 
+// Generates a random day for a given year/month, takes into account leap years
 func genRandDay(year, month int) int {
 
 	daysInMonth := []int{
